@@ -13,7 +13,6 @@ namespace Main.entity
         [Key]
         public int cID { get; set; }
         public string cName { get; set; }
-        public string description { get; set; }
 
         [ForeignKey("User")]
         public int UserID { get; set; }

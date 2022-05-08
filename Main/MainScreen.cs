@@ -10,19 +10,21 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Main.entity;
 using Main.Migrations;
+using Main.StaticForm;
 
 namespace Main
 {
     public partial class MainScreen : Form
     {
         Context context = new Context();
-
         public MainScreen()
         {
             InitializeComponent();
+            this.IsMdiContainer = true;
         }
         public string UserLogin;
         public string SessionUserLoginName { get => UserLogin; set => UserLogin = value; }
+
         private void MainScreen_Load(object sender, EventArgs e)
         {
             var query1 = context.dbCategories
@@ -30,7 +32,6 @@ namespace Main
                 .Where(x => x.User.ad == SessionUserLoginName)
                 .ToList();
 
-            dataGridView1.DataSource = query1.ToList();
 
             var CName = context.dbCategories
                .Where(o => o.User.ad == SessionUserLoginName).ToList();
@@ -39,20 +40,32 @@ namespace Main
             for (int i = 0; i < ButtonCount; i++)
             {
                 string cname = CName[i].cName;
-                ToolTip ToolTip = new ToolTip();
                 Label CategoryName = new Label();
-                ToolTip.SetToolTip(CategoryName, "deneme");
                 CategoryName.Text = cname;
-                CategoryName.ContextMenuStrip = BtnDescription;
                 CategoryName.Width = 180;
                 CategoryName.BorderStyle = BorderStyle.FixedSingle;
                 CategoryName.TextAlign = ContentAlignment.MiddleCenter;
                 CategoryName.BackColor = Color.White;
                 CategoryName.ForeColor = Color.Black;
                 Categories.Controls.Add(CategoryName);
-
+                CategoryName.DoubleClick += new EventHandler(GetCategoryClick);
             }
         }
+
+        private void GetCategoryClick(object sender, EventArgs e)
+        {
+            Label CategoryNameLabel = new Label();
+            ContentUI ContentUI = new ContentUI();
+            CategoryNameLabel.Text = sender.ToString();
+            string CategoryName = CategoryNameLabel.Text.Substring(34);
+
+            ContentUI.GetCategoryName = CategoryName;
+            ContentUI.UserLogin = UserLogin;
+
+            ContentUI.MdiParent = this;
+            ContentUI.Show();
+        }
+
         private void BtnAdd_Click(object sender, EventArgs e)
         {
             dbCategory CategoryInputName = new dbCategory()
@@ -74,23 +87,6 @@ namespace Main
             CategoryName.BackColor = Color.White;
             CategoryName.ForeColor = Color.Black;
             Categories.Controls.Add(CategoryName);
-        }
-
-        private void açıklamaToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var UserIDTransfer = context.dbCategories
-                .Where(x => x.User.ad == SessionUserLoginName)
-                .Select(x => x.UserID)
-                .FirstOrDefault();
-            var CategoryTransfer = context.dbCategories
-                .Where(x => x.User.id == UserIDTransfer)
-                .Select(x => x.cName)
-                .ToList()
-                .ToString();
-            DescriptionPanel DescriptionPanel = new DescriptionPanel();
-            DescriptionPanel.SessionUserID = UserIDTransfer;
-            DescriptionPanel.SessionCategoryName = CategoryTransfer;
-            DescriptionPanel.Show();
         }
     }
 }
