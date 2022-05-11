@@ -25,20 +25,36 @@ namespace Main.StaticForm
 
         private void ContentUI_Load(object sender, EventArgs e)
         {
-            var GetContentName = Context.dbContents
-                .Where(w => w.dbCategory.User.ad == SessionUserLoginName
-                &&
-                w.dbCategory.cName == GetSetCategoryName)
-                .Select(w => w.conName)
+            var GetCategoryID = Context.dbCategories
+                .Where(x => x.User.ad == UserLogin)
+                .Select(x => x.cID)
                 .ToList();
 
+            var GetContentName = Context.dbContents
+                .Where(x => x.dbCategory.User.ad == UserLogin)
+                .Select(x => x.conName)
+                .ToList();
+
+            var GetContentID = Context.dbContents
+                .Where(x => x.dbCategory.User.ad == UserLogin)
+                .Select(x => x.conID)
+                .ToList();
+
+            var SetCategoryID = GetCategoryID.Count();
+
             var SetContentName = GetContentName.Count();
+
+            var SetContentID = GetContentID.Count();
 
             for (int j = 0; j < SetContentName; j++)
             {
                 string ContentName = GetContentName[j];
+                string ContentID = GetContentID[j].ToString();
+                string CategoryID = GetCategoryID[j].ToString();
                 Label ContentLabel = new Label();
                 ContentLabel.Text = ContentName;
+                ContentLabel.AccessibleDefaultActionDescription = ContentID;
+                ContentLabel.AccessibleDescription = CategoryID;
                 ContentLabel.Width = 480;
                 ContentLabel.Height = 25;
                 ContentLabel.TextAlign = ContentAlignment.MiddleCenter;
@@ -47,19 +63,19 @@ namespace Main.StaticForm
                 ContentList.Controls.Add(ContentLabel);
                 ContentLabel.DoubleClick += new EventHandler(ContentLabelDoubleClick);
             }
+
         }
         private void ContentLabelDoubleClick(object sender, EventArgs e)
         {
-            ContentInsertUI ContentInsertUI = new ContentInsertUI();
-            Label ContentLabel = new Label();
-            ContentLabel.Text = sender.ToString();
-            string Content = ContentLabel.Text.Substring(34);
+            ContentInsertUI ContentInsert = new ContentInsertUI();
+            Label ContentLabel = (Label)sender;
 
-            ContentInsertUI.GetContentNameText = Content;
-            ContentInsertUI.GetCategoryName = GetSetCategoryName;
-            ContentInsertUI.SessionUserLoginName = SessionUserLoginName;
-
-            ContentInsertUI.Show();
+            ContentInsert.ContentID = ContentLabel.AccessibleDefaultActionDescription;
+            ContentInsert.CategoryID = ContentLabel.AccessibleDescription;
+            ContentInsert.GetContentNameText = ContentLabel.Text;
+            ContentInsert.GetCategoryName = GetSetCategoryName;
+            ContentInsert.SessionUserLoginName = SessionUserLoginName;
+            ContentInsert.Show();
         }
 
         private void btnContentAdd_Click(object sender, EventArgs e)
@@ -67,11 +83,9 @@ namespace Main.StaticForm
             dbContent dbContent = new dbContent()
             {
                 conName = txtContent.Text,
-                CategoryID = Context.dbContents
-                .Where(w => w.dbCategory.User.ad == SessionUserLoginName
-                &&
-                w.dbCategory.cName == GetSetCategoryName)
-                .Select(w => w.dbCategory.cID)
+                CategoryID = Context.dbCategories
+                .Where(x => x.cName == GetCategoryName)
+                .Select(x => x.cID)
                 .FirstOrDefault(),
                 conYear = DateTime.Now
             };
@@ -80,30 +94,25 @@ namespace Main.StaticForm
             Context.SaveChanges();
 
             var GetCategoryID = Context.dbContents
-                .Where(w => w.dbCategory.User.ad == SessionUserLoginName
-                &&
-                w.dbCategory.cName == GetSetCategoryName)
-                .Select(w => w.CategoryID)
+                .Where(x => x.dbCategory.cName == GetCategoryName)
+                .Select(x => x.CategoryID)
                 .FirstOrDefault();
 
-            var ContentNameMirroring = Context.dbContents
-                .Where(w => w.dbCategory.User.ad == SessionUserLoginName
-                &&
-                w.dbCategory.cName == GetSetCategoryName
-                &&
-                w.conID == GetCategoryID)
-                .Select(w => w.conName)
-                .DefaultIfEmpty()
+            var ContentName = Context.dbContents
+                .Where(x => x.conName == txtContent.Text)
+                .Select(x => x.conName)
                 .FirstOrDefault();
 
             Label ContentLabel = new Label();
-            ContentLabel.Text = ContentNameMirroring;
+            ContentLabel.Text = ContentName;
             ContentLabel.Width = 480;
             ContentLabel.Height = 25;
             ContentLabel.TextAlign = ContentAlignment.MiddleCenter;
             ContentLabel.BackColor = Color.White;
             ContentLabel.ForeColor = Color.Black;
             ContentList.Controls.Add(ContentLabel);
+
+            ContentLabel.DoubleClick += new EventHandler(ContentLabelDoubleClick);
         }
     }
 }

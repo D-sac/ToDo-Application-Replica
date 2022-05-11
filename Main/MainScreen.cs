@@ -27,7 +27,7 @@ namespace Main
 
         private void MainScreen_Load(object sender, EventArgs e)
         {
-            var query1 = context.dbCategories
+            var GetTableCategory = context.dbCategories
                 .Include(x => x.User)
                 .Where(x => x.User.ad == SessionUserLoginName)
                 .ToList();
@@ -65,15 +65,15 @@ namespace Main
             ContentUI.MdiParent = this;
             ContentUI.Show();
         }
-
         private void BtnAdd_Click(object sender, EventArgs e)
         {
             dbCategory CategoryInputName = new dbCategory()
             {
                 cName = txtCategoryName.Text,
-                UserID = context.dbCategories
-                  .Where(x => x.User.ad == SessionUserLoginName)
-                  .Select(x => x.User.id).FirstOrDefault()
+                UserID = context.dbUsers
+                .Where(x => x.ad == SessionUserLoginName)
+                .Select(x => x.id)
+                .FirstOrDefault()
             };
 
             context.dbCategories.Add(CategoryInputName);
@@ -87,6 +87,8 @@ namespace Main
             CategoryName.BackColor = Color.White;
             CategoryName.ForeColor = Color.Black;
             Categories.Controls.Add(CategoryName);
+
+            CategoryName.DoubleClick += new EventHandler(GetCategoryClick);
         }
     }
 }

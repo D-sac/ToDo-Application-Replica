@@ -29,56 +29,67 @@ namespace Main.StaticForm
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ContentInsertUI));
-            this.TakePictureBoxPanel = new System.Windows.Forms.Panel();
-            this.BackGroundPictureBox = new System.Windows.Forms.PictureBox();
-            this.TakePictureBoxPanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BackGroundPictureBox)).BeginInit();
+            this.TextEditor = new Zoople.HTMLEditControl();
             this.SuspendLayout();
             // 
-            // TakePictureBoxPanel
+            // TextEditor
             // 
-            this.TakePictureBoxPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.TakePictureBoxPanel.Controls.Add(this.BackGroundPictureBox);
-            this.TakePictureBoxPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.TakePictureBoxPanel.Location = new System.Drawing.Point(0, 0);
-            this.TakePictureBoxPanel.Name = "TakePictureBoxPanel";
-            this.TakePictureBoxPanel.Size = new System.Drawing.Size(800, 350);
-            this.TakePictureBoxPanel.TabIndex = 0;
-            // 
-            // BackGroundPictureBox
-            // 
-            this.BackGroundPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BackGroundPictureBox.Image = ((System.Drawing.Image)(resources.GetObject("BackGroundPictureBox.Image")));
-            this.BackGroundPictureBox.Location = new System.Drawing.Point(0, 0);
-            this.BackGroundPictureBox.Name = "BackGroundPictureBox";
-            this.BackGroundPictureBox.Size = new System.Drawing.Size(800, 350);
-            this.BackGroundPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.BackGroundPictureBox.TabIndex = 0;
-            this.BackGroundPictureBox.TabStop = false;
+            this.TextEditor.AcceptsReturn = true;
+            this.TextEditor.AllowDragInternal = true;
+            this.TextEditor.AutoSize = true;
+            this.TextEditor.AvailableInlineStyles = ((System.Collections.Generic.List<string>)(resources.GetObject("TextEditor.AvailableInlineStyles")));
+            this.TextEditor.BaseURL = null;
+            this.TextEditor.CleanMSWordHTMLOnPaste = true;
+            this.TextEditor.CodeEditor.Enabled = true;
+            this.TextEditor.CodeEditor.Locked = false;
+            this.TextEditor.CodeEditor.TabWidth = 720;
+            this.TextEditor.CodeEditor.WordWrap = false;
+            this.TextEditor.CSSText = null;
+            this.TextEditor.CustomColorPalette = null;
+            this.TextEditor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TextEditor.DocumentHTML = null;
+            this.TextEditor.EditingDisabled = false;
+            this.TextEditor.EnableInlineSpelling = false;
+            this.TextEditor.FontSizesList = null;
+            this.TextEditor.FontsList = null;
+            this.TextEditor.HiddenButtons = null;
+            this.TextEditor.ImageStorageLocation = null;
+            this.TextEditor.InCodeView = false;
+            this.TextEditor.LanguageFile = null;
+            this.TextEditor.LicenceActivationKey = null;
+            this.TextEditor.LicenceKey = null;
+            this.TextEditor.LicenceKeyInlineSpelling = null;
+            this.TextEditor.Location = new System.Drawing.Point(0, 0);
+            this.TextEditor.Name = "TextEditor";
+            this.TextEditor.Size = new System.Drawing.Size(645, 359);
+            this.TextEditor.SpellingAutoCorrectionList = ((System.Collections.Hashtable)(resources.GetObject("TextEditor.SpellingAutoCorrectionList")));
+            this.TextEditor.TabIndex = 0;
+            this.TextEditor.ToolstripImageScalingSize = new System.Drawing.Size(16, 16);
+            this.TextEditor.UseParagraphAsDefault = true;
+            this.TextEditor.Load += new System.EventHandler(this.TextEditor_Load);
             // 
             // ContentInsertUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.TakePictureBoxPanel);
+            this.ClientSize = new System.Drawing.Size(645, 359);
+            this.Controls.Add(this.TextEditor);
             this.Name = "ContentInsertUI";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "ContentInsertUI";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.ContentInsertUI_Load);
-            this.TakePictureBoxPanel.ResumeLayout(false);
-            this.TakePictureBoxPanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.BackGroundPictureBox)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel TakePictureBoxPanel;
-        private System.Windows.Forms.PictureBox BackGroundPictureBox;
+        private Zoople.HTMLEditControl TextEditor;
     }
 }

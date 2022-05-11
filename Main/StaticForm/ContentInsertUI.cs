@@ -20,29 +20,91 @@ namespace Main.StaticForm
         public string SessionUserLoginName { get => UserLogin; set => UserLogin = value; }
         public string GetContentNameText;
         public string SetContentText { get => GetContentNameText; set => GetContentNameText = value; }
+
+        public string CategoryID;
+        public string SetCategoryID { get => CategoryID; set => CategoryID = value; }
+
+        public string ContentID;
+        public string SetContentID { get => ContentID; set => ContentID = value; }
+
         public ContentInsertUI()
         {
             InitializeComponent();
+
+            this.FormClosing += TextEditor_Closing;
         }
 
         private void ContentInsertUI_Load(object sender, EventArgs e)
         {
-            var GetContent = Context.dbContents
-                .Where(d => d.dbCategory.User.ad == SessionUserLoginName
-                &&
-                d.dbCategory.cName == GetSetCategoryName
-                &&
-                d.conName == SetContentText)
-                .Select(d => d.con_tent)
-                .ToList();
+            var GetCategoryID = Context.dbCategories
+                .Where(x => x.cName == GetCategoryName)
+                .Select(x => x.cID)
+                .FirstOrDefault();
 
-            var ContentCount = GetContent.Count();
+            string Content = Context.dbContents
+                .Where(x => x.CategoryID == GetCategoryID)
+                .Select(x => x.con_tent)
+                .FirstOrDefault();
 
-            for (int i = 0; i < ContentCount; i++)
+            TextEditor.DocumentHTML = Content;
+        }
+
+        private void TextEditor_Closing(object sender, FormClosingEventArgs e)
+        {
+            var dialog = MessageBox.Show("Kaydedilsin mi?", "ÇIKIŞ", MessageBoxButtons.YesNo);
+            
+            if (dialog == DialogResult.Yes)
             {
-                string Content = GetContent[i];
-                Label ContentLabel = new Label();
+
+                var GetContentName = Context.dbContents
+                .Where(x => x.dbCategory.cID.ToString() == CategoryID)
+                .Select(x => x.conName)
+                .Count();
+
+                int ContentNameCount = GetContentName;
+
+                if (ContentNameCount == 0)
+                {
+                    //Tablo bağlamında "NUll" dönmekte...
+                    dbContent dbContent = new dbContent()
+                    {
+                        conName = GetContentNameText,
+                        con_tent = TextEditor.DocumentHTML,
+                        conYear = DateTime.Now,
+                        CategoryID = Convert.ToInt32(CategoryID)
+                    };
+
+                    Context.dbContents.Add(dbContent);
+
+                    Context.SaveChanges();
+                }
+                else
+                {
+                    using (var Context = new Context())
+                    {
+                        var Content = Context.dbContents
+                            .Where(x => x.con_tent.Contains(x.con_tent))
+                            .ToList();
+                        Content.ForEach(a =>
+                        {
+                            a.con_tent = TextEditor.DocumentHTML;
+                        }
+
+                       );
+
+                        Context.SaveChanges();
+                    }
+                }
             }
+            else
+            {
+
+            }
+        }
+
+        private void TextEditor_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
