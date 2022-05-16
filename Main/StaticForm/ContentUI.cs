@@ -29,7 +29,7 @@ namespace Main.StaticForm
                 .Where(x => x.User.ad == UserLogin)
                 .Select(x => x.cID)
                 .ToList();
-
+            //Categori isimleri'nin hepsi geliyor!
             var GetContentName = Context.dbContents
                 .Where(x => x.dbCategory.User.ad == UserLogin)
                 .Select(x => x.conName)
@@ -70,8 +70,8 @@ namespace Main.StaticForm
             ContentInsertUI ContentInsert = new ContentInsertUI();
             Label ContentLabel = (Label)sender;
 
-            ContentInsert.ContentID = ContentLabel.AccessibleDefaultActionDescription;
-            ContentInsert.CategoryID = ContentLabel.AccessibleDescription;
+            ContentInsert.SetContentID = ContentLabel.AccessibleDefaultActionDescription;
+            ContentInsert.SetCategoryID = ContentLabel.AccessibleDescription;
             ContentInsert.GetContentNameText = ContentLabel.Text;
             ContentInsert.GetCategoryName = GetSetCategoryName;
             ContentInsert.SessionUserLoginName = SessionUserLoginName;

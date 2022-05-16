@@ -37,12 +37,12 @@ namespace Main.StaticForm
         private void ContentInsertUI_Load(object sender, EventArgs e)
         {
             var GetCategoryID = Context.dbCategories
-                .Where(x => x.cName == GetCategoryName)
+                .Where(x => x.cID.ToString() == CategoryID)
                 .Select(x => x.cID)
                 .FirstOrDefault();
 
             string Content = Context.dbContents
-                .Where(x => x.CategoryID == GetCategoryID)
+                .Where(x => x.conID.ToString() == ContentID)
                 .Select(x => x.con_tent)
                 .FirstOrDefault();
 
@@ -57,21 +57,20 @@ namespace Main.StaticForm
             {
 
                 var GetContentName = Context.dbContents
-                .Where(x => x.dbCategory.cID.ToString() == CategoryID)
+                .Where(x => x.conID.ToString() == ContentID)
                 .Select(x => x.conName)
-                .Count();
+                .FirstOrDefault();
 
-                int ContentNameCount = GetContentName;
-
-                if (ContentNameCount == 0)
+                if (GetContentName == null)
                 {
-                    //Tablo bağlamında "NUll" dönmekte...
+                    int SetCategoryID = Convert.ToInt32(CategoryID);
+
                     dbContent dbContent = new dbContent()
                     {
                         conName = GetContentNameText,
                         con_tent = TextEditor.DocumentHTML,
                         conYear = DateTime.Now,
-                        CategoryID = Convert.ToInt32(CategoryID)
+                        //CategoryID = Query gelecek...
                     };
 
                     Context.dbContents.Add(dbContent);
@@ -89,9 +88,7 @@ namespace Main.StaticForm
                         {
                             a.con_tent = TextEditor.DocumentHTML;
                         }
-
                        );
-
                         Context.SaveChanges();
                     }
                 }
