@@ -36,6 +36,19 @@ namespace Main.StaticForm
 
         private void ContentInsertUI_Load(object sender, EventArgs e)
         {
+            var VContentID = Context.dbContents
+                .Where(x => x.dbCategory.User.ad == UserLogin)
+                .Select(x => x.conID)
+                .ToList();
+
+            int IntContentID = Convert.ToInt32(ContentID);
+
+            var ContentName = Context.dbContents
+                .Where(x => x.dbCategory.User.ad == UserLogin)
+                .Where(x => x.conID == IntContentID)
+                .Select(x => x.conName)
+                .FirstOrDefault();
+
             var GetCategoryID = Context.dbCategories
                 .Where(x => x.cID.ToString() == CategoryID)
                 .Select(x => x.cID)
@@ -47,21 +60,49 @@ namespace Main.StaticForm
                 .FirstOrDefault();
 
             TextEditor.DocumentHTML = Content;
+
+            int VContentIDCount = ContentID.Count();
+
+            for (int j = 0; j < VContentIDCount; j++)
+            {
+                int SetContentID = ContentID[j];
+
+                var GetStartDateTime = Context.dbContents
+                     .Where(x => x.conID == SetContentID)
+                     .Select(x => x.ContentStartDate)
+                     .FirstOrDefault();
+
+                var GetFinishDateTime = Context.dbContents
+                    .Where(x => x.conID == SetContentID)
+                    .Select(x => x.ContentFinishDate)
+                    .FirstOrDefault();
+
+                if (GetFinishDateTime.Date > GetStartDateTime.Date)
+                {
+                    TimeSpan TM = GetFinishDateTime - DateTime.Now;
+                    MessageBox.Show(ContentName + " İçeriği için kalan gün: " + TM.Days.ToString());
+                }
+            }
         }
 
         private void TextEditor_Closing(object sender, FormClosingEventArgs e)
         {
             var dialog = MessageBox.Show("Kaydedilsin mi?", "ÇIKIŞ", MessageBoxButtons.YesNo);
-            
+
             if (dialog == DialogResult.Yes)
             {
 
-                var GetContentName = Context.dbContents
+                var VerificationContentID = Context.dbContents
                 .Where(x => x.conID.ToString() == ContentID)
-                .Select(x => x.conName)
+                .Select(x => x.conID)
+                .ToList();
+
+                var VerificationContent = Context.dbContents
+                .Where(x => x.conID.ToString() == ContentID)
+                .Select(x => x.con_tent)
                 .FirstOrDefault();
 
-                if (GetContentName == null)
+                if (string.IsNullOrEmpty(VerificationContent))
                 {
                     int SetCategoryID = Convert.ToInt32(CategoryID);
 
@@ -70,14 +111,17 @@ namespace Main.StaticForm
                         conName = GetContentNameText,
                         con_tent = TextEditor.DocumentHTML,
                         conYear = DateTime.Now,
-                        //CategoryID = Query gelecek...
+                        CategoryID = Context.dbCategories
+                        .Where(x => x.cID.ToString() == CategoryID)
+                        .Select(x => x.cID)
+                        .FirstOrDefault()
                     };
 
                     Context.dbContents.Add(dbContent);
 
                     Context.SaveChanges();
                 }
-                else
+                else if (!string.IsNullOrEmpty(VerificationContent))
                 {
                     using (var Context = new Context())
                     {
@@ -87,6 +131,15 @@ namespace Main.StaticForm
                         Content.ForEach(a =>
                         {
                             a.con_tent = TextEditor.DocumentHTML;
+                            if (StartDate.Value.Day < DateTime.Now.Day)
+                            {
+                                MessageBox.Show("Geçmişe yönelik görev tanımlanamaz!");
+                            }
+                            else
+                            {
+                                a.ContentStartDate = StartDate.Value;
+                                a.ContentFinishDate = FinishDate.Value;
+                            }
                         }
                        );
                         Context.SaveChanges();

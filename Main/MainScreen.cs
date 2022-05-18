@@ -27,15 +27,27 @@ namespace Main
 
         private void MainScreen_Load(object sender, EventArgs e)
         {
+            var ContentID = context.dbContents
+                .Where(x => x.dbCategory.User.ad == UserLogin)
+                .Select(x => x.conID)
+                .ToList();
+
+            var ContentName = context.dbContents
+                .Where(x => x.dbCategory.User.ad == UserLogin)
+                .Select(x => x.conName)
+                .ToList();
+
             var GetTableCategory = context.dbCategories
                 .Include(x => x.User)
                 .Where(x => x.User.ad == SessionUserLoginName)
                 .ToList();
 
-
             var CName = context.dbCategories
-               .Where(o => o.User.ad == SessionUserLoginName).ToList();
+               .Where(o => o.User.ad == SessionUserLoginName)
+               .ToList();
+
             var ButtonCount = CName.Count();
+            int ContentIDCount = ContentID.Count();
 
             for (int i = 0; i < ButtonCount; i++)
             {
@@ -49,6 +61,12 @@ namespace Main
                 CategoryName.ForeColor = Color.Black;
                 Categories.Controls.Add(CategoryName);
                 CategoryName.DoubleClick += new EventHandler(GetCategoryClick);
+
+                for (int j = 0; j < ContentIDCount; j++)
+                {
+                    
+
+                }
             }
         }
 

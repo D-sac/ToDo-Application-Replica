@@ -15,6 +15,8 @@ namespace Main.entity
         public string conName { get; set; }
         public string con_tent { get; set; }
         public DateTime conYear { get; set; }
+        public DateTime ContentStartDate { get; set; }
+        public DateTime ContentFinishDate { get; set; }
 
         [ForeignKey("dbCategory")]
         public int CategoryID { get; set; }

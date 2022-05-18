@@ -18,6 +18,11 @@ namespace Main.StaticForm
         public string GetSetCategoryName { get => GetCategoryName; set => GetCategoryName = value; }
         public string UserLogin;
         public string SessionUserLoginName { get => UserLogin; set => UserLogin = value; }
+        public DateTime GetStartDateTime;
+        public DateTime SetStartDatetime { get => GetStartDateTime; set => GetStartDateTime = value; }
+        public DateTime GetFinishDateTime;
+        public DateTime SetFinishDatetime { get => GetFinishDateTime; set => GetFinishDateTime = value; }
+
         public ContentUI()
         {
             InitializeComponent();
@@ -25,13 +30,15 @@ namespace Main.StaticForm
 
         private void ContentUI_Load(object sender, EventArgs e)
         {
-            var GetCategoryID = Context.dbCategories
-                .Where(x => x.User.ad == UserLogin)
-                .Select(x => x.cID)
+            var GetCategoryID = Context.dbContents
+                .Where(x => x.dbCategory.User.ad == UserLogin)
+                .Where(x => x.dbCategory.cID == x.CategoryID)
+                .Select(x => x.dbCategory.cID)
                 .ToList();
-            //Categori isimleri'nin hepsi geliyor!
+
             var GetContentName = Context.dbContents
                 .Where(x => x.dbCategory.User.ad == UserLogin)
+                .Where(x => x.dbCategory.cName == GetCategoryName)
                 .Select(x => x.conName)
                 .ToList();
 
@@ -46,7 +53,7 @@ namespace Main.StaticForm
 
             var SetContentID = GetContentID.Count();
 
-            for (int j = 0; j < SetContentName; j++)
+            for (int j = 0; j < SetCategoryID; j++)
             {
                 string ContentName = GetContentName[j];
                 string ContentID = GetContentID[j].ToString();
@@ -62,8 +69,31 @@ namespace Main.StaticForm
                 ContentLabel.ForeColor = Color.Black;
                 ContentList.Controls.Add(ContentLabel);
                 ContentLabel.DoubleClick += new EventHandler(ContentLabelDoubleClick);
-            }
 
+                int IntContentID = Convert.ToInt32(ContentID);
+
+                var GetStartDateTime = Context.dbContents
+                     .Where(x => x.conID == IntContentID)
+                     .Select(x => x.ContentStartDate)
+                     .FirstOrDefault();
+
+                var GetFinishDateTime = Context.dbContents
+                    .Where(x => x.conID == IntContentID)
+                    .Select(x => x.ContentFinishDate)
+                    .FirstOrDefault();
+
+                int dt = DateTime.Compare(GetStartDateTime, GetFinishDateTime);
+
+                if (dt > 0)
+                {
+                    ContentLabel.ForeColor = Color.Red;
+                    ContentLabel.Text = ContentLabel.Text + "    " + GetFinishDateTime.ToString();
+                }
+                else if (dt < 0)
+                {
+                    ContentLabel.Text = ContentLabel.Text + "    " + GetFinishDateTime.ToString();
+                }
+            }
         }
         private void ContentLabelDoubleClick(object sender, EventArgs e)
         {
