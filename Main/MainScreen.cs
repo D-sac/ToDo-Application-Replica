@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Drawing;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -16,15 +17,36 @@ namespace Main
 {
     public partial class MainScreen : Form
     {
+        public string UserLogin;
+        public string SessionUserLoginName { get => UserLogin; set => UserLogin = value; }
+
         Context context = new Context();
         public MainScreen()
         {
             InitializeComponent();
             this.IsMdiContainer = true;
         }
-        public string UserLogin;
-        public string SessionUserLoginName { get => UserLogin; set => UserLogin = value; }
+        void SendMail()
+        {
+            string Mail = context.dbUsers
+            .Where(x => x.ad == SessionUserLoginName)
+            .Select(x => x.mail)
+            .FirstOrDefault();
 
+            MailMessage Message = new MailMessage();
+            SmtpClient Client = new SmtpClient();
+
+            Message.From = new MailAddress("ToDodeneme@hotmail.com");
+            Message.Subject = "Hoşgeldin";
+            Message.Body = "Deneme1";
+            Message.To.Add(Mail);
+
+            Client.Credentials = new System.Net.NetworkCredential("ToDodeneme@hotmail.com", "deneme4545");
+            Client.Port = 587;
+            Client.Host = "smtp.live.com";
+            Client.EnableSsl = true;
+            Client.Send(Message);
+        }
         private void MainScreen_Load(object sender, EventArgs e)
         {
             var ContentID = context.dbContents
@@ -64,10 +86,11 @@ namespace Main
 
                 for (int j = 0; j < ContentIDCount; j++)
                 {
-                    
+
 
                 }
             }
+            SendMail();
         }
 
         private void GetCategoryClick(object sender, EventArgs e)
