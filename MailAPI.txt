@@ -1,0 +1,12 @@
+[API-1.1]Node.js ile mail servis hazırlanacak, test edilecek(https://www.youtube.com/watch?v=nP3EA2IPYkk).
+[API-1.2]Servis tüm posta gönderimleri test edilecek ve rapor oluşturulacak.
+[API-2.1]Node.js ile yazılan servis; Library(From Existing Node.js) olarak gömülecek.
+[API-2.2]Servis'e gönderilen veri ile test yapılacak.
+[API-2.3]Servis için html(içinde css olacak şekilde) template hazırlanacak.
+
+[Arrangement]Todo'dan text dosyası çıkartılacak ve dosya içerisine e-posta,
+	tarih verileri tutulacak.
+	
+[API-1.1-REPORT]Goggle üzerinde iki adımlı doğrulama yaptıktan sonra, e-posta başarılı bir şekilde gönderildi,
+	E-posta hesap bilgileri; replicatodo1@gmail.com,gubaevxcdyjumpuv.
+	E-posta hesap bilgileri; todot590@gmail.com,todo2222.

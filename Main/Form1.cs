@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace Main
 {
@@ -36,6 +37,8 @@ namespace Main
 
             Regex regex = new Regex(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$");
             Match match = regex.Match(Tmail.Text);
+
+            MailMethod();
 
             if (match.Success)
             {
@@ -90,11 +93,43 @@ namespace Main
                 labelMail.Text = "Mail adresinizi kontrol ediniz..";
             }
         }
+
         private void pictureBox3_Click(object sender, EventArgs e)
         {
             UserLogin userLogin = new UserLogin();
             this.Hide();
             userLogin.Show();
+        }
+
+        private void MailMethod() 
+        {
+            string DirectoryPath = @"C:\TodoSettings";
+            string FilePath = @"C:\TodoSettings\MailAddress.txt";
+            string FileName = "MailAddress.txt";
+            string MailAddress = Tmail.Text;
+
+            if (System.IO.Directory.Exists(DirectoryPath))
+            {
+                if (System.IO.File.Exists(FilePath))
+                {
+                    System.IO.File.WriteAllText(@"C:\TodoSettings\MailAddress.txt", MailAddress);
+                }
+                else
+                {
+                    string TargetPath = System.IO.Path.Combine(@"C:\TodoSettings", FileName);
+                    System.IO.File.Create(TargetPath);
+
+                    System.IO.File.WriteAllText(@"C:\TodoSettings\MailAddress.txt", MailAddress);
+                }
+            }
+            else
+            {
+                System.IO.Directory.CreateDirectory(DirectoryPath);
+                string TargetPath = System.IO.Path.Combine(@"C:\TodoSettings", FileName);
+                System.IO.File.Create(TargetPath);
+
+                System.IO.File.WriteAllText(@"C:\TodoSettings\MailAddress.txt", MailAddress);
+            }
         }
     }
 }
